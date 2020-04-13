@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Context } from '../context/BlogContext';
@@ -6,7 +6,23 @@ import { Context } from '../context/BlogContext';
 import { Feather } from '@expo/vector-icons';
 
 const IndexScreen = ({ navigation }) => {
-    const { state, addBlogPost, deleteBlogPost} = useContext(Context);
+    const { state, deleteBlogPost, getBlogPost } = useContext(Context);
+
+    useEffect(() => {
+        getBlogPost();
+
+        // menambahan listener supaya setelah save post langsung back ke indexScreen
+        const listener = navigation.addListener('didFocus', () => {
+            getBlogPost();
+        });
+
+        // mremove listener setelah dijalankan
+        return () => {
+            listener.remove();
+        };
+
+    }, [])
+
     return (
         <View>
             <Text>Ini Index Sceen ya</Text>
